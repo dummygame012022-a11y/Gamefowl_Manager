@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="grid3" style="grid-template-columns:1fr 1fr 1fr;gap:10px">
+  <a class="stat" href="{{ url_for('birds_summary') }}"><b>{{ total_birds }}</b>Total Birds</a>
+  <a class="stat" href="{{ url_for('breeding') }}"><b>{{ pens }}</b>Pens</a>
+  <a class="stat red" href="{{ url_for('health') }}"><b>{{ sick }}</b>Sick Bay</a>
+</div>
+<div class="section-head"><h3>My Pens</h3><span><a class="btn-outline" href="{{ url_for('breeding') }}">+ Add Pen</a> <a class="btn-outline" href="/bird/add" id="addBirdBtn">+ Add Bird</a></span></div>
+{% for p in pen_list %}
+<a class="card" href="{{ url_for('pen_detail', pen_id=p.id) }}" style="display:block;text-decoration:none;color:inherit">
+  <div class="row"><strong>{{ p.pen_name }}</strong><span class="badge">{{ p.bird_count }} birds</span></div>
+</a>
+{% else %}<div class="card muted">No pens yet. Tap + Add Pen.</div>{% endfor %}
+<div class="section-head"><h3>📋 Today's To-Do List</h3></div>
+<div class="card">
+  {% for t in tasks %}
+  <form method="post" action="{{ url_for('task_toggle', task_id=t.id) }}" class="todo">
+    <input type="checkbox" onchange="this.form.submit()" {{ 'checked' if t.is_done }}>
+    <div class="{{ 'done' if t.is_done }}"><strong>{{ t.task_title }}</strong>
+      <small class="muted">{{ t.program_type }}{% if t.band_number or t.figba_tag or t.toe_punch %} · {{ t.band_number or t.figba_tag or t.toe_punch }}{% endif %}{% if t.due_date < today and not t.is_done %} · overdue ({{ t.due_date }}){% endif %}</small></div>
+  </form>
+  {% else %}
+  <p class="muted" style="text-align:center;padding:10px 0">No tasks today. All good!</p>
+  {% endfor %}
+</div>
+<div id="birdModal" class="bm" hidden><div class="bm-box" id="birdModalBody"></div></div>
+<style>
+.bm{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:12px}
+.bm[hidden]{display:none}
+.bm-box{background:#111c15;border:1px solid #2a3d31;border-radius:14px;width:100%;max-width:560px;padding:14px;margin:auto 0}
+.bf label{display:block;margin-bottom:10px}
+.bf input,.bf select,.bf textarea{width:100%;box-sizing:border-box;margin-top:4px}
+.bf [hidden]{display:none!important}
+.bf-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.bf-head h3{margin:0}
+.bf-x{background:none;border:none;color:inherit;font-size:1.3rem;width:auto}
+.bf-tabs{display:flex;gap:8px;margin-bottom:12px}
+.bf-tab{flex:1;background:transparent;border:1px solid #2a3d31;color:inherit;border-radius:8px;padding:8px}
+.bf-tab.on{background:#4ade80;color:#06210f;font-weight:bold}
+.bf[data-mode=single] .only-batch{display:none}
+.bf[data-mode=batch] .only-single{display:none}
+.bf-toe{margin-bottom:10px}
+.bf-toe-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px;margin-top:6px}
+.bf-row{display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-bottom:8px}
+.bf-btns{display:flex;gap:10px;margin-top:12px}
+.bf-btns button{flex:1}
+</style>
+<script>
+(function(){
+var m=document.getElementById('birdModal'),body=document.getElementById('birdModalBody');
+function openM(){m.hidden=false;document.body.style.overflow='hidden';body.innerHTML='<p class="muted">Loading...</p>';fetch('/bird/form').then(function(r){return r.text();}).then(function(h){body.innerHTML=h;});}
+function closeM(){m.hidden=true;document.body.style.overflow='';}
+var b=document.getElementById('addBirdBtn');
+if(b)b.addEventListener('click',function(e){e.preventDefault();openM();});
+if(location.search.indexOf('add=1')>-1){history.replaceState(null,'','/');openM();}
+m.addEventListener('click',function(e){
+ var t=e.target;
+ if(t===m||t.hasAttribute('data-close')){closeM();return;}
+ var f=body.querySelector('form');
+ if(t.classList.contains('bf-tab')&&f){
+  var md=t.getAttribute('data-mode');
+  f.setAttribute('data-mode',md);f.elements['mode'].value=md;
+  [].forEach.call(f.querySelectorAll('.bf-tab'),function(x){x.classList.toggle('on',x===t);});
+ }
+ if(false){
+  var d=document.createElement('div');d.className='bf-row';
+  d.innerHTML='<select name="extra_type"><option>Wingband</option><option>Leg Band</option><option>Other</option></select><input name="extra_val" placeholder="Tag number">';
+  document.getElementById('extraTags').appendChild(d);
+ }
+});
+m.addEventListener('change',function(e){
+ var t=e.target,f=body.querySelector('form');if(!f)return;
+ if(t.name==='pen_id')document.getElementById('newPenBox').hidden=(t.value!=='new');
+ if(t.name==='source')document.getElementById('sellerBox').hidden=(t.value!=='Bought');
+});
+})();
+</script>
+
+<div id="tagModal" class="tm" hidden><div class="tm-box">
+<h4>Add Tag</h4>
+<label>Tag Type<select id="tmType"><option>Wingband</option><option>Leg Band</option><option>Toe Punch</option><option>Other</option></select></label>
+<label id="tmNameW" hidden>Tag Name<input id="tmName" placeholder="e.g. FIGBA, Bakbakan" autocomplete="off"></label>
+<div id="tmToeW" hidden>
+ <div style="margin-bottom:6px">Toe Punch</div>
+ <div class="tm-toe">
+  <label><input type="checkbox" value="RI"> RI</label>
+  <label><input type="checkbox" value="RO"> RO</label>
+  <label><input type="checkbox" value="LI"> LI</label>
+  <label><input type="checkbox" value="LO"> LO</label>
+ </div>
+</div>
+<label id="tmValW">Tag Number<input id="tmVal" autocomplete="off"></label>
+<div class="bf-btns"><button type="button" class="btn-outline" id="tmCancel">Cancel</button><button type="button" id="tmSave">Save</button></div>
+</div></div>
+<style>
+.tm{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1100;display:flex;align-items:center;justify-content:center;padding:16px}
+.tm[hidden],.tm [hidden]{display:none!important}
+.tm-box{background:#16241b;border:1px solid #2a3d31;border-radius:12px;width:100%;max-width:340px;padding:14px}
+.tm-box h4{margin:0 0 10px}
+.tm-box label{display:block;margin-bottom:10px}
+.tm-box input:not([type=checkbox]),.tm-box select{width:100%;box-sizing:border-box;margin-top:4px}
+.tm-toe{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.tm-toe label{display:flex;align-items:center;gap:8px;margin:0;padding:10px;border:1px solid #2a3d31;border-radius:8px}
+.tm-toe input{width:auto;margin:0}
+.tg{display:inline-flex;align-items:center;gap:6px;background:#1d3326;border:1px solid #2a3d31;border-radius:999px;padding:4px 10px;margin:0 6px 8px 0}
+.tg-x{background:none;border:none;color:inherit;width:auto;padding:0 2px}
+</style>
+<script>
+(function(){
+var tm=document.getElementById('tagModal'),tv=document.getElementById('tmVal'),tt=document.getElementById('tmType'),
+ tn=document.getElementById('tmName'),nw=document.getElementById('tmNameW'),toeW=document.getElementById('tmToeW'),vw=document.getElementById('tmValW');
+function sync(){var k=tt.value;nw.hidden=(k!=='Other');toeW.hidden=(k!=='Toe Punch');vw.hidden=(k==='Toe Punch');}
+function openT(){tv.value='';tn.value='';tt.selectedIndex=0;
+ toeW.querySelectorAll('input').forEach(function(c){c.checked=false;});sync();tm.hidden=false;setTimeout(function(){tv.focus();},50);}
+function closeT(){tm.hidden=true;}
+tt.addEventListener('change',sync);
+function chip(label,val,hname,hval){
+ var list=document.getElementById('tagList');if(!list)return;
+ var c=document.createElement('span');c.className='tg';
+ var b=document.createElement('b');b.textContent=label+':';
+ var s=document.createElement('span');s.textContent=val;
+ var x=document.createElement('button');x.type='button';x.className='tg-x';x.textContent='\u2715';
+ c.appendChild(b);c.appendChild(s);c.appendChild(x);
+ if(hname==='toe_punch'){c.setAttribute('data-toe','1');
+  var h=document.createElement('input');h.type='hidden';h.name='toe_punch';h.value=hval;c.appendChild(h);}
+ else{
+  var i1=document.createElement('input');i1.type='hidden';i1.name='tag_type';i1.value=label;
+  var i2=document.createElement('input');i2.type='hidden';i2.name='tag_val';i2.value=val;
+  c.appendChild(i1);c.appendChild(i2);}
+ list.appendChild(c);
+}
+document.addEventListener('click',function(e){
+ var t=e.target;
+ if(t.id==='addTag'){openT();return;}
+ if(t===tm||t.id==='tmCancel'){closeT();return;}
+ if(t.id==='tmSave'){
+  var k=tt.value;
+  if(k==='Toe Punch'){
+   var on=[];toeW.querySelectorAll('input:checked').forEach(function(c){on.push(c.value);});
+   if(!on.length)return;
+   var old=document.querySelector('#tagList [data-toe]');if(old)old.remove();
+   var v=on.join(' ');chip('Toe Punch',v,'toe_punch',v);closeT();return;}
+  var val=tv.value.trim();if(!val){tv.focus();return;}
+  var label=k;
+  if(k==='Other'){label=tn.value.trim();if(!label){tn.focus();return;}}
+  chip(label,val);closeT();return;}
+ if(t.classList.contains('tg-x')){t.parentNode.remove();}
+});
+})();
+</script>
+
+
+
+{% endblock %}

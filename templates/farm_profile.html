@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<p class="eyebrow">SETTINGS</p><h1>Farm Profile</h1>
+<p class="muted">Only Farm Name is required.</p>
+<form method="post" enctype="multipart/form-data" class="panel form-grid">
+  <label>Farm Name <span class="required">*</span><input name="farm_name" value="{{ farm.farm_name if farm }}" required maxlength="150"></label>
+  <label>Location<input name="location" value="{{ farm.location or '' if farm }}" maxlength="200"></label>
+  <label>Owner Name<input name="owner_name" value="{{ farm.owner_name or '' if farm }}" maxlength="150"></label>
+  <label>Contact<input name="contact" value="{{ farm.contact or '' if farm }}" maxlength="100"></label>
+  <div>
+    <strong>Farm Logo / Photo</strong>
+    <div style="margin:8px 0">{% if hdr_logo %}<img src="{{ hdr_logo }}" alt="Logo" style="width:120px;height:120px;object-fit:contain;border-radius:14px;border:2px solid var(--green)">{% else %}<span style="font-size:60px">🐓</span>{% endif %}</div>
+    <input type="file" name="logo" accept="image/jpeg,image/png,image/webp">
+    <label style="margin-top:8px"><input type="checkbox" name="remove_logo" value="1"> Remove my logo (use default)</label>
+    <small class="muted">JPG, PNG or WEBP, up to 8 MB. The original is kept for certificates.</small>
+  </div>
+  <div class="actions"><a class="btn-outline" href="{{ url_for('dashboard') }}">Cancel</a><button type="submit">Save Farm Profile</button></div>
+</form>
+{% endblock %}

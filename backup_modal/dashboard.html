@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="grid3" style="grid-template-columns:1fr 1fr;gap:10px">
+  <a class="stat" href="{{ url_for('breeding') }}"><b>{{ pens }}</b>Pens</a>
+  <a class="stat red" href="{{ url_for('health') }}"><b>{{ sick }}</b>Sick Bay</a>
+</div>
+<div class="section-head"><h3>My Pens</h3><span><a class="btn-outline" href="{{ url_for('breeding') }}">+ Add Pen</a> <a class="btn-outline" href="/bird/add">+ Add Bird</a></span></div>
+{% for p in pen_list %}
+<a class="card" href="{{ url_for('pen_detail', pen_id=p.id) }}" style="display:block;text-decoration:none;color:inherit">
+  <div class="row"><strong>{{ p.pen_name }}</strong><span class="badge">{{ p.bird_count }} birds</span></div>
+</a>
+{% else %}<div class="card muted">No pens yet. Tap + Add Pen.</div>{% endfor %}
+<div class="section-head"><h3>📋 Today's To-Do List</h3></div>
+<div class="card">
+  {% for t in tasks %}
+  <form method="post" action="{{ url_for('task_toggle', task_id=t.id) }}" class="todo">
+    <input type="checkbox" onchange="this.form.submit()" {{ 'checked' if t.is_done }}>
+    <div class="{{ 'done' if t.is_done }}"><strong>{{ t.task_title }}</strong>
+      <small class="muted">{{ t.program_type }}{% if t.band_number or t.figba_tag or t.toe_punch %} · {{ t.band_number or t.figba_tag or t.toe_punch }}{% endif %}{% if t.due_date < today and not t.is_done %} · overdue ({{ t.due_date }}){% endif %}</small></div>
+  </form>
+  {% else %}
+  <p class="muted" style="text-align:center;padding:10px 0">No tasks today. All good!</p>
+  {% endfor %}
+</div>
+{% endblock %}

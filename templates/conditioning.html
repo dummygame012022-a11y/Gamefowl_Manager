@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="section-head"><h3>🏋️ Keep Program Generator</h3></div>
+<form method="post" action="{{ url_for('keep_start') }}" class="card form-grid">
+  <label>Bird<select name="bird_id" required><option value="">— choose —</option>{% for b in candidates %}<option value="{{ b.id }}">{{ b|blabel }}{% if b.bloodline %} · {{ b.bloodline }}{% endif %}</option>{% endfor %}</select></label>
+  <label>Start date<input type="date" name="start_date" value="{{ today }}"></label>
+  <label>Days in keep<input type="number" name="days" value="21" min="2" max="45"></label>
+  <label>Sparring days (comma-separated)<input name="spar_days" value="4,10,15"></label>
+  <label>Vitamins / notes added to each day (optional)<input name="vitamins" placeholder="your own schedule"></label>
+  <button type="submit">Generate Schedule</button>
+  <p class="muted">Creates one to-do per day on the Dashboard. Edit the days and sparring to match your own program.</p>
+</form>
+
+<div class="section-head"><h3>🐓 In Keep ({{ in_keep|length }})</h3></div>
+{% for b in in_keep %}
+<div class="card">
+  <div class="row"><strong>{{ b|blabel }}</strong>
+    {% if b.last_flag %}<span class="badge {{ 'amber' if 'Luya' in b.last_flag or 'Adjust' in b.last_flag else '' }}">{{ b.last_flag }}</span>{% endif %}</div>
+  <p class="muted">Last weight: {{ b.last_weight ~ ' g' if b.last_weight else '—' }}{% if b.next_task %} · Next ({{ b.next_due }}): {{ b.next_task }}{% endif %}</p>
+  <form method="post" action="{{ url_for('weight_add') }}" class="form-grid">
+    <input type="hidden" name="bird_id" value="{{ b.id }}">
+    <input type="number" name="weight_g" min="1" placeholder="Weight (g)" required>
+    <select name="flag"><option value="">Status (optional)</option><option>Peak Condition</option><option>Medyo Luya</option><option>Needs Adjustment / Pahuway</option></select>
+    <button type="submit">Log Weight</button>
+  </form>
+  <form method="post" action="{{ url_for('keep_end', bird_id=b.id) }}" style="margin-top:8px"><button class="btn-outline" type="submit">End keep</button></form>
+</div>
+{% else %}<div class="card muted">No birds in keep.</div>{% endfor %}
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="section-head"><h3>🏥 Sick Bay</h3></div>
+<details class="card"><summary class="btn-outline">+ Add to Sick Bay</summary>
+  <form method="post" action="{{ url_for('sick_add') }}" class="form-grid">
+    <label>Bird<select name="bird_id"><option value="">— not listed —</option>{% for b in birds %}<option value="{{ b.id }}">{{ b|blabel }}</option>{% endfor %}</select></label>
+    <label>Problem / symptoms<input name="title" required></label>
+    <label>Notes / treatment<input name="notes"></label>
+    <button type="submit">Save</button>
+  </form>
+</details>
+{% for s in sick %}
+<div class="card">
+  <div class="row"><strong>{{ s.band_number or s.figba_tag or s.toe_punch or 'Unassigned' }}</strong><span class="badge {{ 'off' if s.is_done else 'red' }}">{{ 'Recovered' if s.is_done else 'Sick' }}</span></div>
+  <p>{{ s.task_title }}</p>
+  {% if s.notes %}<p class="muted">{{ s.notes }}</p>{% endif %}
+  <p class="muted">Since {{ s.due_date }}</p>
+  {% if not s.is_done %}<form method="post" action="{{ url_for('sick_recover', task_id=s.id) }}" style="margin-top:8px"><button class="btn-outline" type="submit">Mark recovered</button></form>{% endif %}
+</div>
+{% else %}<div class="card muted">Sick Bay is empty.</div>{% endfor %}
+
+<div class="section-head"><h3>💉 Health Tasks</h3></div>
+<details class="card"><summary class="btn-outline">+ Schedule Task (deworm, vaccine, delouse...)</summary>
+  <form method="post" action="{{ url_for('health_task_add') }}" class="form-grid">
+    <label>Task<input name="title" required></label>
+    <label>Bird (optional)<select name="bird_id"><option value="">All / farm-wide</option>{% for b in birds %}<option value="{{ b.id }}">{{ b|blabel }}</option>{% endfor %}</select></label>
+    <label>First due date<input type="date" name="due_date" value="{{ today }}"></label>
+    <label>Repeat every N days (0 = once)<input type="number" name="repeat_days" min="0" value="0"></label>
+    <label>How many times<input type="number" name="times" min="1" max="60" value="1"></label>
+    <button type="submit">Schedule</button>
+  </form>
+</details>
+<div class="card">
+  {% for t in upcoming %}
+  <form method="post" action="{{ url_for('task_toggle', task_id=t.id) }}" class="todo">
+    <input type="checkbox" onchange="this.form.submit()">
+    <div><strong>{{ t.task_title }}</strong><small class="muted">{{ t.due_date }}{% if t.band_number or t.figba_tag or t.toe_punch %} · {{ t.band_number or t.figba_tag or t.toe_punch }}{% endif %}</small></div>
+  </form>
+  {% else %}<p class="muted">No upcoming health tasks.</p>{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>{{ hdr_farm.farm_name }}</h2>
+  <p class="muted">{{ hdr_farm.location or 'Location not set' }} • Owner: {{ hdr_farm.owner_name or 'Not set' }}</p>
+  {% if not hdr_farm.owner_name or not hdr_farm.location %}<p style="margin-top:10px"><a class="btn" href="{{ url_for('farm_profile') }}">Complete Farm Profile</a></p>{% endif %}
+</section>
+<div class="grid3">
+  <a class="stat" href="{{ url_for('breeding') }}"><b>{{ pens }}</b>Active Pens</a>
+  <a class="stat" href="{{ url_for('conditioning') }}"><b>{{ keep }}</b>In Keep</a>
+  <a class="stat red" href="{{ url_for('health') }}"><b>{{ sick }}</b>Sick Bay</a>
+</div>
+<div class="section-head"><h3>📋 Today's To-Do List</h3><a class="btn-outline" href="{{ url_for('conditioning') }}">+ Keep Program</a></div>
+<div class="card">
+  {% for t in tasks %}
+  <form method="post" action="{{ url_for('task_toggle', task_id=t.id) }}" class="todo">
+    <input type="checkbox" onchange="this.form.submit()" {{ 'checked' if t.is_done }}>
+    <div class="{{ 'done' if t.is_done }}"><strong>{{ t.task_title }}</strong>
+      <small class="muted">{{ t.program_type }}{% if t.band_number or t.figba_tag or t.toe_punch %} · {{ t.band_number or t.figba_tag or t.toe_punch }}{% endif %}{% if t.due_date < today and not t.is_done %} · overdue ({{ t.due_date }}){% endif %}</small></div>
+  </form>
+  {% else %}
+  <p class="muted" style="text-align:center;padding:10px 0">Walay task karong adlawa. Hapsay ang tanan!</p>
+  {% endfor %}
+</div>
+{% endblock %}

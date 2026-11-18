@@ -1,0 +1,33 @@
+nohup: ignoring input
+ * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.8.101:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [18/Nov/2026 20:14:10] "GET /farm-profile HTTP/1.1" 200 -
+127.0.0.1 - - [18/Nov/2026 20:14:10] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [18/Nov/2026 20:14:10] "GET /static/css/theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [18/Nov/2026 20:14:25] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [18/Nov/2026 20:14:25] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [18/Nov/2026 20:14:25] "[36mGET /static/css/theme.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [18/Nov/2026 20:14:29] "GET /farm-profile HTTP/1.1" 200 -
+127.0.0.1 - - [18/Nov/2026 20:14:29] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [18/Nov/2026 20:14:29] "[36mGET /static/css/theme.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [18/Nov/2026 20:20:33] "GET /farm-profile HTTP/1.1" 200 -
+127.0.0.1 - - [18/Nov/2026 20:20:33] "[36mGET /static/css/theme.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [18/Nov/2026 20:20:33] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [18/Nov/2026 20:21:21] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [18/Nov/2026 21:47:11] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [18/Nov/2026 21:47:15] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [18/Nov/2026 21:47:26] "GET /farm-profile HTTP/1.1" 200 -
+127.0.0.1 - - [18/Nov/2026 21:47:26] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [18/Nov/2026 21:47:26] "[36mGET /static/css/theme.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [18/Nov/2026 21:49:26] "[32mPOST /farm-profile HTTP/1.1[0m" 302 -
+127.0.0.1 - - [18/Nov/2026 21:49:26] "GET /farm-profile HTTP/1.1" 200 -
+127.0.0.1 - - [18/Nov/2026 21:49:26] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [18/Nov/2026 21:49:26] "[36mGET /static/css/theme.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [18/Nov/2026 21:49:34] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [18/Nov/2026 21:49:35] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+127.0.0.1 - - [18/Nov/2026 21:49:35] "[36mGET /static/css/theme.css HTTP/1.1[0m" 304 -

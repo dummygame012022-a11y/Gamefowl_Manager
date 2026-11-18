@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="section-head"><h3>🐓 All Birds ({{ total }})</h3></div>
+<div class="card">
+  {% for name, n in stages %}<span class="badge" style="margin:0 6px 6px 0">{{ name }}: {{ n }}</span>{% else %}<span class="muted">No birds yet.</span>{% endfor %}
+</div>
+{% for g in groups %}
+<div class="card">
+  <div class="row">
+    <strong>{{ g.name }}</strong>
+    {% if g.id %}<a class="badge" href="{{ url_for('pen_detail', pen_id=g.id) }}">{{ g.birds|length }} birds · open</a>
+    {% else %}<span class="badge">{{ g.birds|length }} birds</span>{% endif %}
+  </div>
+  {% for b in g.birds %}
+  <p class="muted" style="margin:6px 0 0">{{ b|blabel }} · {{ b.sex|stage(b.hatch_date) }}{% if b.color %} · {{ b.color }}{% endif %} · {{ b.status }}</p>
+  {% endfor %}
+</div>
+{% endfor %}
+{% endblock %}

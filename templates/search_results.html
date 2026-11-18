@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Search</h1>
+<p class="muted">{{ birds|length }} result(s) for “{{ term }}”</p>
+{% for b in birds %}
+<div class="card">
+  <div class="row"><strong>{{ b|blabel }}</strong><span class="badge">{{ b.status }}</span></div>
+  <p class="muted">{{ b.bloodline or 'No bloodline' }} · {{ b.sex|stage(b.hatch_date) }} · Hatched {{ b.hatch_date or '—' }}</p>
+  <p class="muted">Toe-punch: {{ b.toe_punch or '—' }} · Wingband: {{ b.band_number or '—' }} · FIGBA: {{ b.figba_tag or '—' }}</p>
+  <p class="muted">Sire: {{ b.sire or '—' }} × Dam: {{ b.dam or '—' }}</p>
+</div>
+{% else %}
+<div class="card muted">{% if term %}Nothing found.{% else %}Type a wingband, FIGBA tag, toe-punch or bloodline above.{% endif %}</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,57 @@
+<div id="birdModal" class="bm" hidden><div class="bm-box" id="birdModalBody"></div></div>
+<style>
+.bm{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:12px}
+.bm[hidden]{display:none}
+.bm-box{background:#111c15;border:1px solid #2a3d31;border-radius:14px;width:100%;max-width:560px;padding:14px;margin:auto 0}
+.bf label{display:block;margin-bottom:10px}
+.bf input,.bf select,.bf textarea{width:100%;box-sizing:border-box;margin-top:4px}
+.bf [hidden]{display:none!important}
+.bf-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.bf-head h3{margin:0}
+.bf-x{background:none;border:none;color:inherit;font-size:1.3rem;width:auto}
+.bf-tabs{display:flex;gap:8px;margin-bottom:12px}
+.bf-tab{flex:1;background:transparent;border:1px solid #2a3d31;color:inherit;border-radius:8px;padding:8px}
+.bf-tab.on{background:#4ade80;color:#06210f;font-weight:bold}
+.bf[data-mode=single] .only-batch{display:none}
+.bf[data-mode=batch] .only-single{display:none}
+.bf-toe{margin-bottom:10px}
+.bf-toe-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px;margin-top:6px}
+.bf-row{display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-bottom:8px}
+.bf-btns{display:flex;gap:10px;margin-top:12px}
+.bf-btns button{flex:1}
+</style>
+<script>
+(function(){
+var m=document.getElementById('birdModal'),body=document.getElementById('birdModalBody');
+function openM(){m.hidden=false;document.body.style.overflow='hidden';body.innerHTML='<p class="muted">Loading...</p>';fetch('/bird/form').then(function(r){return r.text();}).then(function(h){body.innerHTML=h;});}
+function closeM(){m.hidden=true;document.body.style.overflow='';}
+var b=document.getElementById('addBirdBtn');
+if(b)b.addEventListener('click',function(e){e.preventDefault();openM();});
+if(location.search.indexOf('add=1')>-1){history.replaceState(null,'','/');openM();}
+m.addEventListener('click',function(e){
+ var t=e.target;
+ if(t===m||t.hasAttribute('data-close')){closeM();return;}
+ var f=body.querySelector('form');
+ if(t.classList.contains('bf-tab')&&f){
+  var md=t.getAttribute('data-mode');
+  f.setAttribute('data-mode',md);f.elements['mode'].value=md;
+  [].forEach.call(f.querySelectorAll('.bf-tab'),function(x){x.classList.toggle('on',x===t);});
+ }
+ if(t.id==='addTag'&&f){
+  var d=document.createElement('div');d.className='bf-row';
+  d.innerHTML='<select name="extra_type"><option>Wingband</option><option>Leg Band</option><option>Other</option></select><input name="extra_val" placeholder="Tag number">';
+  document.getElementById('extraTags').appendChild(d);
+ }
+});
+m.addEventListener('change',function(e){
+ var t=e.target,f=body.querySelector('form');if(!f)return;
+ if(t.name==='pen_id')document.getElementById('newPenBox').hidden=(t.value!=='new');
+ if(t.name==='source')document.getElementById('sellerBox').hidden=(t.value!=='Bought');
+ if(t.classList.contains('tsel')){
+  var v={};[].forEach.call(f.querySelectorAll('.tsel'),function(s){v[s.getAttribute('data-k')]=s.value;});
+  var all=(v.lo+v.li+v.ro+v.ri)==='0000';
+  document.getElementById('toeVal').value=all?'':'L'+v.lo+'-'+v.li+' R'+v.ro+'-'+v.ri;
+ }
+});
+})();
+</script>

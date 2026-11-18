@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<p class="eyebrow">HELP</p><h1>User Guide</h1>
+<p class="no-print"><button type="button" onclick="window.print()">Print</button> <a class="button secondary" href="{{ url_for('tools') }}">Back to Tools</a></p>
+<section class="panel no-print">
+<strong>Jump to</strong><br>
+<a href="#dashboard">Dashboard</a> · <a href="#animals">Animals</a> · <a href="#health">Health</a> · <a href="#feeds">Feeds</a> · <a href="#tools">Tools</a> · <a href="#tips">Tips</a>
+</section>
+
+<h2 id="dashboard">Dashboard</h2>
+<section class="panel">
+<p>The Dashboard is the home screen. It shows your farm name, how many active animals you have, the latest animals you registered, and a red Feed alert banner when a feed item is low.</p>
+<p>Set your farm name and details in <a href="{{ url_for('farm_profile') }}">Farm Profile</a>. Only the farm name is required.</p>
+</section>
+
+<h2 id="animals">Animals</h2>
+<section class="panel">
+<p><strong>Register an animal:</strong> open Animals, tap Register Animal, choose the species, and save. Only Species is required. Sex, breed, birth date, mother and father (dam and sire), and notes are optional.</p>
+<p><strong>Animal ID:</strong> every animal gets a permanent Animal ID from the system. You do not type it, and it never changes.</p>
+<p><strong>Tags:</strong> if the animal has an ear tag, band, barcode or other tag, choose the identification method and type its value. Each tag value can be used by one animal only, and the app warns you if it is already used. If your method is not in the list, choose Other Method and type its name.</p>
+<p><strong>Find an animal:</strong> use the search box (Animal ID, breed, tag or parents) and the species filter on the Animals screen.</p>
+<p><strong>Animal page:</strong> tap an animal to see its details, tag, identifier history, health history and activity history.</p>
+</section>
+
+<h2 id="health">Health</h2>
+<section class="panel">
+<p><strong>Add a record:</strong> open Health and tap + Add Health Record, or open an animal and tap + Add health record there. Choose the animal, type (Vaccine, Deworming, Treatment, Vitamin, Checkup or Other), and date. Product, dose, cost and notes are optional.</p>
+<p><strong>Next due date:</strong> enter it for things that repeat, like a vaccine. The Health screen then lists it under Due soon / Overdue starting 7 days before. When you add a newer record of the same type for the same animal, the old due date drops off the list.</p>
+<p><strong>Recent records:</strong> the Health screen also lists the latest records, and each animal page keeps its own health history.</p>
+</section>
+
+<h2 id="feeds">Feeds</h2>
+<section class="panel">
+<p><strong>Add a feed item:</strong> open Feeds and tap + Add Feed Item. Give it a name and a type. If your type is not in the list, choose Other and type it in the Custom type box.</p>
+<p><strong>Stock unit:</strong> choose what you count and feed in: kg, sack, piece, liter, bale, or Other (type your own).</p>
+<p><strong>Feed bought in sacks:</strong> to count in kg but buy by the sack, enter a pack name and pack size (for example sack, 50 for a 50 kg sack). Then enter how many packs you have. The app stores kg and also shows the sack count beside it. Feeding is always recorded in the stock unit.</p>
+<p><strong>Restock:</strong> tap Restock on the feed card and enter the packs or quantity you added. You can also update the cost per unit.</p>
+<p><strong>Record feeding:</strong> tap Record Feeding, choose the feed, date and quantity, and who it was fed to: all animals, a species group, or one animal. The quantity is taken out of stock. The app will not save a feeding larger than the stock you have.</p>
+<p><strong>Low-stock warning (optional):</strong> tap Warning on a feed card. Choose No warning, Days or weeks of feed left, or Quantity left (in the stock unit or in packs).</p>
+<p><strong>Colors:</strong> red LOW means at or below your warning level, or out of stock. Amber GETTING LOW means within double the warning level. Green OK means stock is fine. Gray NO WARNING means no warning is set. Red and amber items also show as a Feed alert on the Dashboard.</p>
+<p><strong>Days left:</strong> it is estimated from the last 14 days of feeding records. Until you have feeding records, the card says it is waiting for them.</p>
+</section>
+
+<h2 id="tools">Tools</h2>
+<section class="panel">
+<p><strong>Reports:</strong> Animals (count by species and status), Health (last 30 days, costs, and what is due or overdue) and Feeds (stock levels, plus feed used and cost in the last 30 days). The feed cost uses each feed's current cost per unit.</p>
+<p><strong>Print or save as PDF:</strong> tap Print on a report (or on this guide), then choose Save as PDF in the print screen.</p>
+<p><strong>Backup:</strong> tap Download backup. A copy of all your records is saved to this device, usually in the Downloads folder, with the date and time in its name.</p>
+</section>
+
+<h2 id="tips">Tips</h2>
+<section class="panel">
+<ul>
+<li>Download a backup regularly (for example every week) and keep the file somewhere safe, like another folder or another device.</li>
+<li>Record health and feeding the same day, so the due dates and days-left estimates stay accurate.</li>
+<li>Do not reuse a tag value for a different animal. The Animal ID stays with the animal.</li>
+<li>If a message appears in red at the top of a screen, read it. It tells you what to fix before saving.</li>
+</ul>
+</section>
+{% endblock %}

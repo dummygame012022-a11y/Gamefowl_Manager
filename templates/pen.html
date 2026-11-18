@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="section-head"><h3>🐣 {{ pen.pen_name }}</h3><a class="btn-outline" href="{{ url_for('breeding') }}">← Pens</a></div>
+
+<div class="card">
+  <div class="row"><strong>Breeding Info</strong><span class="badge {{ 'off' if pen.status != 'Active' }}">{{ pen.status }}</span></div>
+  <p class="muted">{{ pen.sire or '?' }} × {{ pen.dam or '?' }} · paired {{ pen.date_paired or '—' }}{% if pen.batch_mark %} · Mark: {{ pen.batch_mark }}{% endif %}</p>
+  <p>Eggs: {{ pen.eggs_set or 0 }} · Hatched: {{ pen.hatched_count or 0 }}{% if pen.eggs_set %} ({{ (100 * (pen.hatched_count or 0) / pen.eggs_set)|round|int }}%){% endif %}</p>
+  <details><summary class="btn-outline">+ Breeding Info</summary>
+    <form method="post" action="{{ url_for('pen_breeding', pen_id=pen.id) }}" class="form-grid">
+      <label>Sire (cock)<input name="sire" value="{{ pen.sire or '' }}"></label>
+      <label>Dam (hen)<input name="dam" value="{{ pen.dam or '' }}"></label>
+      <label>Date paired<input type="date" name="date_paired" value="{{ pen.date_paired or '' }}"></label>
+      <label>Eggs set<input type="number" name="eggs_set" min="0" value="{{ pen.eggs_set or 0 }}"></label>
+      <label>Hatched<input type="number" name="hatched_count" min="0" value="{{ pen.hatched_count or 0 }}"></label>
+      <label>Batch mark (toe-punch)<input name="batch_mark" value="{{ pen.batch_mark or '' }}"></label>
+      <button type="submit">Save</button>
+    </form>
+  </details>
+</div>
+
+<div class="section-head"><h3>🐓 Birds ({{ birds|length }})</h3></div>
+<details class="card"><summary class="btn-outline">+ Add Bird</summary>
+  <form method="post" action="{{ url_for('pen_chicken_add', pen_id=pen.id) }}" class="form-grid">
+    <label>Toe-punch (batch mark)<input name="toe_punch"></label>
+    <label>Wingband<input name="band_number"></label>
+    <label>FIGBA tag<input name="figba_tag"></label>
+    <label>Bloodline<input name="bloodline"></label>
+    <label>Sex<select name="sex"><option value="">Unsexed</option><option>Male</option><option>Female</option></select></label>
+    <label>Sire<input name="sire"></label>
+    <label>Dam<input name="dam"></label>
+    <label>Hatch date<input type="date" name="hatch_date"></label>
+    <label>Fighting style<input name="fighting_style"></label>
+    <button type="submit">Save Bird</button>
+  </form>
+</details>
+{% for b in birds %}
+<div class="card">
+  <div class="row"><strong>{{ b|blabel }}</strong><span class="badge">{{ b.status }}</span></div>
+  <p class="muted">{{ b.bloodline or 'No bloodline' }} · {{ b.sex|stage(b.hatch_date) }} · Toe-punch: {{ b.toe_punch or '—' }}</p>
+  <details><summary class="btn-outline" style="margin-top:8px">Move to another pen</summary>
+    <form method="post" action="{{ url_for('bird_move', bird_id=b.id) }}" class="inline">
+      <select name="pen_id"><option value="">— Not assigned —</option>{% for op in other_pens %}<option value="{{ op.id }}">{{ op.pen_name }}</option>{% endfor %}</select>
+      <button type="submit">Move</button>
+    </form>
+  </details>
+  <details><summary class="btn-outline" style="margin-top:8px">Update wingband / FIGBA</summary>
+    <form method="post" action="{{ url_for('bird_tag', bird_id=b.id) }}" class="inline">
+      <input name="band_number" value="{{ b.band_number or '' }}" placeholder="Wingband">
+      <input name="figba_tag" value="{{ b.figba_tag or '' }}" placeholder="FIGBA">
+      <button type="submit">Save</button>
+    </form>
+  </details>
+</div>
+{% else %}<div class="card muted">No chickens in this pen yet.</div>{% endfor %}
+
+<form method="post" action="{{ url_for('pen_toggle', pen_id=pen.id) }}"><button class="btn-outline" type="submit">{{ 'Close pen' if pen.status == 'Active' else 'Reopen pen' }}</button></form>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Add or Move Bird</h1>
+<p class="muted">Enter the tag and choose a pen. A new tag adds a new bird. An existing tag moves that bird to the pen.</p>
+<form method="post" class="card form-grid">
+  <label>Pen<select name="pen_id" required><option value="">— Choose pen —</option>{% for p in pens %}<option value="{{ p.id }}">{{ p.pen_name }}</option>{% endfor %}</select></label>
+  <label>Wingband<input name="band_number"></label>
+  <label>Toe-punch<input name="toe_punch"></label>
+  <button type="submit">Save Bird</button>
+</form>
+{% endblock %}

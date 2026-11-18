@@ -1,0 +1,24 @@
+<form method="post" action="/bird/add" enctype="multipart/form-data" class="bf" data-mode="single">
+<div class="bf-head"><h3>Add Bird</h3><button type="button" class="bf-x" data-close>✕</button></div>
+<div class="bf-tabs"><button type="button" class="bf-tab on" data-mode="single">Single Bird</button><button type="button" class="bf-tab" data-mode="batch">Batch</button></div>
+<input type="hidden" name="mode" value="single">
+<label>Pen<select name="pen_id" required><option value="">— Choose pen —</option>{% for p in pens %}<option value="{{ p.id }}">{{ p.pen_name }}</option>{% endfor %}<option value="new">+ New Pen</option></select></label>
+<label id="newPenBox" hidden>New Pen Name<input name="new_pen_name"></label>
+<label class="only-batch">Number of Birds<input name="count" type="number" min="1" max="200" inputmode="numeric"></label>
+<label>Hatch Date<input name="hatch_date" type="date"></label>
+<div class="only-single">
+<div id="tagList"></div>
+<button type="button" class="btn-outline" id="addTag">+ Add Tag</button>
+</div>
+<label>Sire Tag<input name="sire"></label>
+<label>Dam Tag<input name="dam"></label>
+<label>Bloodline<input name="bloodline"></label>
+<label>Sex<select name="sex"><option value="">Unknown</option><option>Male</option><option>Female</option></select></label>
+<label>Color<input name="color"></label>
+<label>Source<select name="source"><option>Bred Here</option><option>Bought</option><option>Gift</option></select></label>
+<label id="sellerBox" hidden>Seller Name<input name="seller"></label>
+<label>Status<select name="status"><option>Active</option><option>Sold</option><option>Dead</option></select></label>
+<label class="only-single">Photo<input type="file" name="photo" accept="image/*"></label>
+<label>Note<textarea name="notes" rows="2" placeholder="Example: bought, parents unknown"></textarea></label>
+<div class="bf-btns"><button type="button" class="btn-outline" data-close>Cancel</button><button type="submit">Save Bird</button></div>
+</form>

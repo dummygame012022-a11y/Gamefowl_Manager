@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h3>🧬 Bloodline % Calculator</h3>
+  <p class="muted">Share of one bloodline in the offspring.</p>
+  <label>% in sire<input id="bl_s" type="number" min="0" max="100" value="100" oninput="blc()"></label>
+  <label>% in dam<input id="bl_d" type="number" min="0" max="100" value="0" oninput="blc()"></label>
+  <div class="result" id="bl_r">50%</div>
+</div>
+<div class="card">
+  <h3>🌾 Feed Calculator</h3>
+  <label>Number of birds<input id="fd_n" type="number" min="1" value="10" oninput="fdc()"></label>
+  <label>Grams per bird per day<input id="fd_g" type="number" min="1" value="120" oninput="fdc()"></label>
+  <label>Days<input id="fd_d" type="number" min="1" value="30" oninput="fdc()"></label>
+  <div class="result" id="fd_r"></div>
+</div>
+<div class="card">
+  <h3>📚 Guides &amp; Backup</h3>
+  <p style="margin:8px 0"><a class="btn-outline" href="{{ url_for('help_page') }}">Open Help / Guides</a></p>
+  <p><a class="btn-outline" href="{{ url_for('tools_backup') }}">⬇ Download database backup</a></p>
+</div>
+<script>
+function blc(){var s=parseFloat(document.getElementById('bl_s').value)||0,d=parseFloat(document.getElementById('bl_d').value)||0;document.getElementById('bl_r').textContent=((s+d)/2).toFixed(1)+'%';}
+function fdc(){var n=parseFloat(document.getElementById('fd_n').value)||0,g=parseFloat(document.getElementById('fd_g').value)||0,d=parseFloat(document.getElementById('fd_d').value)||0;document.getElementById('fd_r').textContent=(n*g*d/1000).toFixed(1)+' kg total';}
+blc();fdc();
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="section-head"><h3>🐣 Pens</h3></div>
+<details class="card"><summary class="btn-outline">+ Add Pen</summary>
+  <form method="post" action="{{ url_for('pen_add') }}" class="form-grid">
+    <label>Name (example: Cage 1, Breeding Pen 1)<input name="pen_name" required></label>
+    <button type="submit">Save</button>
+  </form>
+</details>
+{% for p in pens %}
+<div class="card">
+  <div class="row"><a href="{{ url_for('pen_detail', pen_id=p.id) }}"><strong>{{ p.pen_name }}</strong></a><span class="badge {{ 'off' if p.status != 'Active' }}">{{ p.status }}</span></div>
+  <p class="muted">Birds here: {{ p.bird_count }}</p>
+  <a class="btn-outline" href="{{ url_for('pen_detail', pen_id=p.id) }}">Open</a>
+  <form method="post" action="{{ url_for('pen_toggle', pen_id=p.id) }}"><button class="btn-outline" type="submit">{{ 'Close' if p.status == 'Active' else 'Reopen' }}</button></form>
+</div>
+{% else %}<div class="card muted">No pens yet.</div>{% endfor %}
+{% endblock %}
